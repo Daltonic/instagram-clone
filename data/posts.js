@@ -28,10 +28,6 @@ export const POSTS = [
     profile_picture: USERS[1].image,
     comments: [
       {
-        user: 'peleza',
-        comment: 'Hmm, definetly yummy!',
-      },
-      {
         user: 'prayingmedic',
         comment: 'That is how to start your day!',
       },
