@@ -1,7 +1,7 @@
 export const USERS = [
   {
-    user: 'Ashley',
-    image: 'https://randomuser.me/api/portraits/women/28.jpg',
+    user: 'Daltonic',
+    image: 'https://avatars.githubusercontent.com/u/29388627?v=4',
   },
   {
     user: 'Bobby',
