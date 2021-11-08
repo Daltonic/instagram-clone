@@ -7,10 +7,10 @@ import Stories from '../components/Stories'
 import { POSTS } from '../data/posts'
 import { TABS } from '../data/tabs'
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header navigation={navigation} />
       <Stories />
       <ScrollView>
         {POSTS.map((post, index) => (
