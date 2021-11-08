@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as Yup from 'yup'
 import { Formik } from 'formik'
+import validUrl from 'valid-url'
 
 const uploadPostSchema = Yup.object().shape({
   imageUrl: Yup.string().url().required('A URL is required'),
@@ -11,13 +12,16 @@ const uploadPostSchema = Yup.object().shape({
 const PLACEHOLDER_IMG =
   'https://avatarairlines.com/wp-content/uploads/2020/05/Male-placeholder.jpeg'
 
-const FormikPostUploader = () => {
+const FormikPostUploader = ({ navigation }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(PLACEHOLDER_IMG)
 
   return (
     <Formik
       initialValues={{ caption: '', imageUrl: '' }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={(values) => {
+        console.log(values, 'Your post was successfully share!')
+        navigation.goBack()
+      }}
       validationSchema={uploadPostSchema}
       validateOnMount={true}
     >
@@ -37,7 +41,9 @@ const FormikPostUploader = () => {
             }}
           >
             <Image
-              source={{ uri: thumbnailUrl || PLACEHOLDER_IMG }}
+              source={{
+                uri: validUrl.isUri(thumbnailUrl) || PLACEHOLDER_IMG,
+              }}
               style={{ width: 100, height: 100, borderRadius: 9 }}
             />
             <TextInput

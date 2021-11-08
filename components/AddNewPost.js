@@ -5,7 +5,7 @@ import FormikPostUploader from './FormikPostUploader'
 const AddNewPost = ({ navigation }) => (
   <View style={styles.container}>
     <Header navigation={navigation} />
-    <FormikPostUploader />
+    <FormikPostUploader navigation={navigation} />
   </View>
 )
 
