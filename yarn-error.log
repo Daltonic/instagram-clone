@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\gospel\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add react-native-screens@~3.8.0 react-native-safe-area-context@3.3.2
+  C:\Program Files\nodejs\node.exe C:\Users\gospel\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add email-validator
 
 PATH: 
   C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\gospel\bin;C:\Python39\Scripts;C:\Python39;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\RailsInstaller\Git\cmd;C:\Program Files\Git\cmd;C:\xampp\php;C:\composer;C:\Users\gospel\Anaconda3\Scripts;C:\xampp\mysql\bin;C:\Program Files\MySQL\MySQL Utilities 1.6;C:\Program Files\Amazon\AWSCLIV2;C:\Program Files\nodejs;C:\Program Files (x86)\Simply Fortran 2\mingw-w64\bin;C:\Program Files (x86)\Simply Fortran 2\mingw-w64\x86_64-w64-mingw32\lib32;C:\Program Files (x86)\Simply Fortran 2\mingw-w64\x86_64-w64-mingw32\lib64;C:\Users\gospel\Anaconda3;C:\RailsInstaller\Git\cmd;C:\RailsInstaller\Ruby2.3.3\bin;C:\Users\gospel\AppData\Local\Microsoft\WindowsApps;C:\Users\gospel\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\gospel\AppData\Roaming\Composer\vendor\bin;C:\Users\gospel\AppData\Roaming\npm
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Sites\reactnative\instagram-clone\node_modules\@babel\generator\node_modules\.bin'
+  Error: EPERM: operation not permitted, unlink 'C:\Sites\reactnative\instagram-clone\node_modules\@react-native-community\cli-platform-ios\node_modules\xcode\node_modules\.bin'
 
 npm manifest: 
   {
@@ -37,6 +37,8 @@ npm manifest:
       "react-native": "0.64.2",
       "react-native-elements": "^3.4.2",
       "react-native-gesture-handler": "^1.10.3",
+      "react-native-safe-area-context": "3.3.2",
+      "react-native-screens": "~3.8.0",
       "react-native-web": "0.17.1",
       "valid-url": "^1.0.9",
       "yup": "^0.32.11"
@@ -4703,6 +4705,18 @@ Lockfile:
     integrity sha512-Xczu5lskIIRD6BEdz9A0jDRpEck/SFxRqiglkXi0u67yAtI1/pcJC76P4MukCbT8K4BPVl+42w83YqXBoBRl7A==
     dependencies:
       lodash "^4.17.15"
+  
+  react-native-safe-area-context@3.3.2:
+    version "3.3.2"
+    resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.3.2.tgz#9549a2ce580f2374edb05e49d661258d1b8bcaed"
+    integrity sha512-yOwiiPJ1rk+/nfK13eafbpW6sKW0jOnsRem2C1LPJjM3tfTof6hlvV5eWHATye3XOpu2cJ7N+HdkUvUDGwFD2Q==
+  
+  react-native-screens@~3.8.0:
+    version "3.8.0"
+    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.8.0.tgz#4ec84c55a7b4a4aa9405c812978ca2ba5c0242a4"
+    integrity sha512-lHrnB/elAoMJKv8O12U6BLgeup4lB6ZKJHEOVuG/D72nv/OE9wUusbou6YCB5tp3YbaSpHflPnkFmHA/vCejpw==
+    dependencies:
+      warn-once "^0.1.0"
   
   react-native-size-matters@^0.3.1:
     version "0.3.1"
