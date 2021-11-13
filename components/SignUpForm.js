@@ -6,10 +6,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
+  Platform,
 } from 'react-native'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Validator from 'email-validator'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from '../firebase'
 
 const signUpFormSchema = Yup.object().shape({
   email: Yup.string().email().required('An email is required'),
@@ -19,12 +26,37 @@ const signUpFormSchema = Yup.object().shape({
     .min(6, 'Password needs to be at least 6 characters long'),
 })
 
+const auth = getAuth()
+
 const SignUpForm = ({ navigation }) => {
+  const getRandomUserPicture = async () => {
+    const response = await fetch('https://randomuser.me/api')
+    const data = await response.json()
+    return data.results[0].picture.large
+  }
+
+  const onSignup = async (email, password, username) => {
+    const pic = await getRandomUserPicture()
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        updateProfile(res.user, {
+          displayName: username,
+          photoURL: pic,
+        })
+        console.log('Firebase Signed Up Successful')
+      })
+      .catch((error) =>
+        Platform.OS != 'web' ? Alert.alert(error.message) : alert(error.message)
+      )
+  }
+
   return (
     <View style={styles.wrapper}>
       <Formik
         initialValues={{ email: '', password: '', username: '' }}
-        onSubmit={(values) => console.log(JSON.stringify(values))}
+        onSubmit={(values) =>
+          onSignup(values.email, values.password, values.username)
+        }
         validationSchema={signUpFormSchema}
         validateOnMount={true}
       >
@@ -37,29 +69,6 @@ const SignUpForm = ({ navigation }) => {
           isValid,
         }) => (
           <>
-            <View
-              style={[
-                styles.inputField,
-                {
-                  borderColor:
-                    1 > values.username.length || values.username.length >= 3
-                      ? '#ccc'
-                      : 'red',
-                },
-              ]}
-            >
-              <TextInput
-                placeholderTextColor="#444"
-                placeholder="Username"
-                autoCapitalize="none"
-                textContentType="username"
-                autoFocus={true}
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-                value={values.username}
-              />
-            </View>
-
             <View
               style={[
                 styles.inputField,
@@ -81,6 +90,29 @@ const SignUpForm = ({ navigation }) => {
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 value={values.email}
+              />
+            </View>
+
+            <View
+              style={[
+                styles.inputField,
+                {
+                  borderColor:
+                    1 > values.username.length || values.username.length >= 3
+                      ? '#ccc'
+                      : 'red',
+                },
+              ]}
+            >
+              <TextInput
+                placeholderTextColor="#444"
+                placeholder="Username"
+                autoCapitalize="none"
+                textContentType="username"
+                autoFocus={true}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                value={values.username}
               />
             </View>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import BottomTabs from '../components/BottomTabs'
 import Header from '../components/Header'
 import Post from '../components/Post'
@@ -28,6 +28,5 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
     flex: 1,
-    alignItems: 'center',
   },
 })
