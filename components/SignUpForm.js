@@ -12,11 +12,8 @@ import {
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import Validator from 'email-validator'
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from '../firebase'
+import { getAuth, createUserWithEmailAndPassword } from '../firebase'
+import { getFirestore, setDoc, doc } from '../firebase'
 
 const signUpFormSchema = Yup.object().shape({
   email: Yup.string().email().required('An email is required'),
@@ -26,9 +23,10 @@ const signUpFormSchema = Yup.object().shape({
     .min(6, 'Password needs to be at least 6 characters long'),
 })
 
-const auth = getAuth()
-
 const SignUpForm = ({ navigation }) => {
+  const auth = getAuth()
+  const db = getFirestore()
+
   const getRandomUserPicture = async () => {
     const response = await fetch('https://randomuser.me/api')
     const data = await response.json()
@@ -36,18 +34,20 @@ const SignUpForm = ({ navigation }) => {
   }
 
   const onSignup = async (email, password, username) => {
-    const pic = await getRandomUserPicture()
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        updateProfile(res.user, {
-          displayName: username,
-          photoURL: pic,
-        })
-        console.log('Firebase Signed Up Successful')
+    try {
+      const authed = await createUserWithEmailAndPassword(auth, email, password)
+      console.log('Firebase Signed Up Successful')
+
+      const userDocRef = doc(db, 'users', authed.user.email)
+      await setDoc(userDocRef, {
+        username,
+        email,
+        pic: await getRandomUserPicture(),
+        uid: authed.user.uid,
       })
-      .catch((error) =>
-        Platform.OS != 'web' ? Alert.alert(error.message) : alert(error.message)
-      )
+    } catch (error) {
+      Platform.OS != 'web' ? Alert.alert(error.message) : alert(error.message)
+    }
   }
 
   return (

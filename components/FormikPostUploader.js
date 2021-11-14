@@ -1,8 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import * as Yup from 'yup'
 import { Formik } from 'formik'
 import validUrl from 'valid-url'
+import {
+  getAuth,
+  collection,
+  addDoc,
+  getDoc,
+  doc,
+  getFirestore,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy,
+} from '../firebase'
 
 const uploadPostSchema = Yup.object().shape({
   imageUrl: Yup.string().url().required('A URL is required'),
@@ -14,13 +26,44 @@ const PLACEHOLDER_IMG =
 
 const FormikPostUploader = ({ navigation }) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(PLACEHOLDER_IMG)
+  const [profile, setProfile] = useState(null)
+
+  const auth = getAuth()
+  const db = getFirestore()
+
+  useEffect(() => getProfile(), [])
+
+  const getProfile = async () => {
+    const userDocRef = doc(db, `users/${auth.currentUser.email}`)
+    const docSnap = await getDoc(userDocRef)
+    const data = docSnap.data()
+
+    setProfile({
+      username: data.username,
+      pic: data.pic,
+      uid: data.uid,
+      email: data.email
+    })
+  }
+
+  const addPost = (imageUrl, caption) =>
+    addDoc(collection(db, `users/${auth.currentUser.email}`, 'posts'), {
+      timestamp: serverTimestamp(),
+      username: profile.username,
+      pic: profile.pic,
+      uid: profile.uid,
+      email: profile.email,
+      caption,
+      imageUrl,
+      liked: [],
+      comments: [],
+    }).then(() => navigation.goBack())
 
   return (
     <Formik
       initialValues={{ caption: '', imageUrl: '' }}
       onSubmit={(values) => {
-        console.log(values, 'Your post was successfully share!')
-        navigation.goBack()
+        addPost(values.imageUrl, values.caption)
       }}
       validationSchema={uploadPostSchema}
       validateOnMount={true}

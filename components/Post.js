@@ -1,14 +1,41 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ICONS } from '../data/icons'
+import {
+  getAuth,
+  getFirestore,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from '../firebase'
 
 const Post = ({ post }) => {
+  const auth = getAuth()
+  const db = getFirestore()
+
+  const handleLike = async (post) => {
+    const currentLikeStatus = !post.liked.includes(auth.currentUser.email)
+    const likesRef = doc(db, `users/${post.email}/posts`, post.id)
+
+    try {
+      await updateDoc(likesRef, {
+        liked: currentLikeStatus
+          ? arrayUnion(auth.currentUser.email)
+          : arrayRemove(auth.currentUser.email),
+      })
+      console.log('Document successfully updated!')
+    } catch (error) {
+      console.log('Error updating document: ', error)
+    }
+  }
+
   return (
     <View style={{ marginBottom: 30 }}>
       <PostHeader post={post} />
       <View style={{ marginHorizontal: 15, marginTop: 10 }}>
         <PostImage post={post} />
-        <PostFooter />
+        <PostFooter post={post} handleLike={handleLike} />
         <PostLikes post={post} />
         <PostCaption post={post} />
         <PostCommentSection post={post} />
@@ -27,8 +54,8 @@ const PostHeader = ({ post }) => {
           alignItems: 'center',
         }}
       >
-        <Image source={{ uri: post.profile_picture }} style={styles.story} />
-        <Text style={styles.userName}>{post.user}</Text>
+        <Image source={{ uri: post.pic }} style={styles.story} />
+        <Text style={styles.userName}>{post.username}</Text>
       </View>
       <Text style={{ color: 'white', fontWeight: 700 }}>...</Text>
     </View>
@@ -46,7 +73,8 @@ const PostImage = ({ post }) => {
   )
 }
 
-const PostFooter = () => {
+const PostFooter = ({ handleLike, post }) => {
+  const auth = getAuth()
   return (
     <View
       style={{
@@ -56,7 +84,16 @@ const PostFooter = () => {
       }}
     >
       <View style={styles.leftFooterIconContainer}>
-        <Icon imgStyle={styles.footerIcon} imgUrl={ICONS[0].imageUrl} />
+        <TouchableOpacity onPress={() => handleLike(post)}>
+          <Image
+            style={styles.footerIcon}
+            source={{
+              uri: post.liked.includes(auth.currentUser.email)
+                ? ICONS[0].likedImageUrl
+                : ICONS[0].imageUrl,
+            }}
+          />
+        </TouchableOpacity>
         <Icon imgStyle={styles.footerIcon} imgUrl={ICONS[1].imageUrl} />
         <Icon imgStyle={styles.footerIcon} imgUrl={ICONS[2].imageUrl} />
       </View>
@@ -77,7 +114,7 @@ const Icon = ({ imgStyle, imgUrl }) => (
 const PostLikes = ({ post }) => (
   <View style={{ flexDirection: 'row', marginTop: 5 }}>
     <Text style={{ color: 'white', fontWeight: 600 }}>
-      {post.likes.toLocaleString('en')} likes
+      {post.liked.length.toLocaleString('en')} likes
     </Text>
   </View>
 )
@@ -85,7 +122,7 @@ const PostLikes = ({ post }) => (
 const PostCaption = ({ post }) => (
   <View style={{ marginTop: 5 }}>
     <Text style={{ color: 'white' }}>
-      <Text style={{ fontWeight: 600 }}>{post.user}</Text>
+      <Text style={{ fontWeight: 600 }}>{post.username}</Text>
       <Text> {post.caption}</Text>
     </Text>
   </View>
